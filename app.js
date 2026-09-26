@@ -24,6 +24,13 @@
     return String(num).replace(/\d/g, d => kurdishDigits[d]);
   }
 
+  // Auto-resize textarea based on content
+  function autoResizeTextarea(textarea) {
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.max(48, textarea.scrollHeight) + 'px';
+  }
+
   // DOM Elements
   const p1NameInput = document.getElementById('player1Name');
   const p2NameInput = document.getElementById('player2Name');
@@ -167,13 +174,12 @@
         value="${rowData.p2 !== undefined ? rowData.p2 : ''}"
         aria-label="خاڵی ${state.player2Name.trim() || DEFAULT_P2_NAME} ڕیزی ${index + 1}"
       />
-      <input 
-        type="text" 
+      <textarea 
         class="note-input" 
+        rows="1"
         placeholder="تێبینی..."
-        value="${rowData.note ? escapeHtml(rowData.note) : ''}"
         aria-label="تێبینی بۆ ڕیزی ${index + 1}"
-      />
+      >${rowData.note ? escapeHtml(rowData.note) : ''}</textarea>
       <button 
         type="button" 
         class="btn-delete-row" 
@@ -192,6 +198,9 @@
     const noteInput = rowEl.querySelector('.note-input');
     const delBtn = rowEl.querySelector('.btn-delete-row');
 
+    // Auto-resize note textarea initially
+    setTimeout(() => autoResizeTextarea(noteInput), 0);
+
     p1Input.addEventListener('input', (e) => {
       rowData.p1 = e.target.value;
       calculateTotals();
@@ -206,14 +215,17 @@
 
     noteInput.addEventListener('input', (e) => {
       rowData.note = e.target.value;
+      autoResizeTextarea(noteInput);
       saveState();
     });
 
-    // Enter key navigation: on note input, add a new row
+    // Enter key handling: Ctrl+Enter adds new row, Enter wraps and auto-expands
     noteInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         addNewRow(true);
+      } else if (e.key === 'Enter') {
+        setTimeout(() => autoResizeTextarea(noteInput), 0);
       }
     });
 
