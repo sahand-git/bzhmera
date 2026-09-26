@@ -301,7 +301,7 @@ body {
 /* Table Column Headers */
 .table-header-grid {
   display: grid;
-  grid-template-columns: 30px 1fr 1fr 1.85fr 34px;
+  grid-template-columns: 28px 74px 74px 1fr 32px;
   gap: 8px;
   align-items: center;
   padding: 4px 6px;
@@ -344,13 +344,13 @@ body {
 /* Individual Score Row */
 .score-row {
   display: grid;
-  grid-template-columns: 30px 1fr 1fr 1.85fr 34px;
+  grid-template-columns: 28px 74px 74px 1fr 32px;
   gap: 8px;
-  align-items: center;
+  align-items: start;
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 6px 8px;
+  padding: 8px;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
               opacity 0.2s ease, 
               border-color 0.2s ease;
@@ -378,7 +378,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
+  height: 52px;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-dim);
   user-select: none;
@@ -387,13 +388,13 @@ body {
 /* Score Input Cells */
 .score-input {
   width: 100%;
-  height: 48px;
+  height: 52px;
   background-color: var(--bg-input);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 0 10px;
+  padding: 0 6px;
   font-family: inherit;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
   text-align: center;
@@ -424,28 +425,28 @@ body {
   background-color: rgba(52, 211, 153, 0.05);
 }
 
-/* Note Input Cell (Auto-expanding Textarea) */
+/* Note Input Cell (Auto-expanding Textarea - Never Cut Off) */
 .note-input {
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
   background-color: var(--bg-input);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 11px 10px;
+  padding: 12px 10px;
   font-family: inherit;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.5;
   color: var(--text-main);
   direction: rtl;
   text-align: right;
   outline: none;
-  resize: none;
-  overflow-y: hidden;
+  resize: vertical;
+  overflow: hidden;
   box-sizing: border-box;
   word-break: break-word;
+  overflow-wrap: anywhere;
   white-space: pre-wrap;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-  field-sizing: content; /* Modern CSS auto-expansion */
 }
 
 .note-input::placeholder {
@@ -460,8 +461,8 @@ body {
 
 /* Row Delete Button */
 .btn-delete-row {
-  width: 36px;
-  height: 48px;
+  width: 32px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -782,21 +783,26 @@ body {
 @media (max-width: 420px) {
   .table-header-grid,
   .score-row {
-    grid-template-columns: 24px 0.95fr 0.95fr 1.75fr 30px;
+    grid-template-columns: 24px 62px 62px 1fr 28px;
     gap: 6px;
-    padding: 5px 6px;
+    padding: 6px;
   }
   
   .score-input {
-    height: 44px;
-    font-size: 1rem;
+    height: 48px;
+    font-size: 1.05rem;
     padding: 0 4px;
   }
 
+  .row-index,
+  .btn-delete-row {
+    height: 48px;
+  }
+
   .note-input {
-    min-height: 44px;
-    font-size: 0.85rem;
-    padding: 9px 8px;
+    min-height: 48px;
+    font-size: 0.9rem;
+    padding: 10px 8px;
   }
 
   .total-number {

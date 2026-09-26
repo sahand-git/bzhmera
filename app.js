@@ -24,11 +24,14 @@
     return String(num).replace(/\d/g, d => kurdishDigits[d]);
   }
 
-  // Auto-resize textarea based on content
+  // Auto-resize textarea based on content so it shows all text completely without cutoffs
   function autoResizeTextarea(textarea) {
     if (!textarea) return;
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.max(48, textarea.scrollHeight) + 'px';
+    // Reset height first so scrollHeight accurately measures full content without being held by previous height
+    textarea.style.height = '0px';
+    const minH = window.innerWidth <= 420 ? 48 : 52;
+    const computedHeight = Math.max(minH, textarea.scrollHeight);
+    textarea.style.height = computedHeight + 'px';
   }
 
   // DOM Elements
@@ -268,6 +271,11 @@
       scoreRowsContainer.appendChild(el);
     });
 
+    // Ensure all note cells expand to fit their full content
+    requestAnimationFrame(() => {
+      scoreRowsContainer.querySelectorAll('.note-input').forEach(autoResizeTextarea);
+    });
+
     calculateTotals();
   }
 
@@ -395,6 +403,11 @@
       if (e.target === resetModal) {
         resetModal.classList.add('hidden');
       }
+    });
+
+    // Auto resize note cells when device is rotated or resized
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.note-input').forEach(autoResizeTextarea);
     });
 
     // Render initial UI
