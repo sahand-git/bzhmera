@@ -425,10 +425,11 @@ body {
   background-color: rgba(52, 211, 153, 0.05);
 }
 
-/* Note Input Cell (Auto-expanding Textarea - Never Cut Off) */
+/* Note AutoFit Cell - Natively auto-sizes to fit any text without cutoff */
 .note-input {
   width: 100%;
   min-height: 52px;
+  height: auto;
   background-color: var(--bg-input);
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -440,17 +441,22 @@ body {
   direction: rtl;
   text-align: right;
   outline: none;
-  resize: vertical;
-  overflow: hidden;
   box-sizing: border-box;
   word-break: break-word;
   overflow-wrap: anywhere;
   white-space: pre-wrap;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
-.note-input::placeholder {
+/* AutoFit Cell Placeholder when empty */
+.note-input:empty::before {
+  content: attr(data-placeholder);
   color: var(--text-dim);
+  pointer-events: none;
+  display: block;
 }
 
 .note-input:focus {

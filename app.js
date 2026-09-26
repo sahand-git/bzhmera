@@ -24,16 +24,6 @@
     return String(num).replace(/\d/g, d => kurdishDigits[d]);
   }
 
-  // Auto-resize textarea based on content so it shows all text completely without cutoffs
-  function autoResizeTextarea(textarea) {
-    if (!textarea) return;
-    // Reset height first so scrollHeight accurately measures full content without being held by previous height
-    textarea.style.height = '0px';
-    const minH = window.innerWidth <= 420 ? 48 : 52;
-    const computedHeight = Math.max(minH, textarea.scrollHeight);
-    textarea.style.height = computedHeight + 'px';
-  }
-
   // DOM Elements
   const p1NameInput = document.getElementById('player1Name');
   const p2NameInput = document.getElementById('player2Name');
@@ -177,12 +167,14 @@
         value="${rowData.p2 !== undefined ? rowData.p2 : ''}"
         aria-label="خاڵی ${state.player2Name.trim() || DEFAULT_P2_NAME} ڕیزی ${index + 1}"
       />
-      <textarea 
-        class="note-input" 
-        rows="1"
-        placeholder="تێبینی..."
+      <div 
+        class="note-input autofit-cell" 
+        contenteditable="plaintext-only" 
+        role="textbox"
+        aria-multiline="true"
+        data-placeholder="تێبینی..."
         aria-label="تێبینی بۆ ڕیزی ${index + 1}"
-      >${rowData.note ? escapeHtml(rowData.note) : ''}</textarea>
+      >${rowData.note ? escapeHtml(rowData.note) : ''}</div>
       <button 
         type="button" 
         class="btn-delete-row" 
@@ -201,9 +193,6 @@
     const noteInput = rowEl.querySelector('.note-input');
     const delBtn = rowEl.querySelector('.btn-delete-row');
 
-    // Auto-resize note textarea initially
-    setTimeout(() => autoResizeTextarea(noteInput), 0);
-
     p1Input.addEventListener('input', (e) => {
       rowData.p1 = e.target.value;
       calculateTotals();
@@ -216,19 +205,41 @@
       saveState();
     });
 
-    noteInput.addEventListener('input', (e) => {
-      rowData.note = e.target.value;
-      autoResizeTextarea(noteInput);
+    // AutoFit Note cell input handling
+    noteInput.addEventListener('input', () => {
+      const text = noteInput.innerText;
+      if (!text || text.trim() === '') {
+        noteInput.innerHTML = '';
+        rowData.note = '';
+      } else {
+        rowData.note = text;
+      }
       saveState();
     });
 
-    // Enter key handling: Ctrl+Enter adds new row, Enter wraps and auto-expands
+    // Clean plain-text paste into AutoFit cell
+    noteInput.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text');
+      if (document.queryCommandSupported && document.queryCommandSupported('insertText')) {
+        document.execCommand('insertText', false, text);
+      } else {
+        const selection = window.getSelection();
+        if (selection.rangeCount) {
+          selection.deleteFromDocument();
+          selection.getRangeAt(0).insertNode(document.createTextNode(text));
+          selection.collapseToEnd();
+        }
+      }
+      rowData.note = noteInput.innerText;
+      saveState();
+    });
+
+    // Enter key handling: Ctrl+Enter adds new row, Enter naturally creates new line in AutoFit cell
     noteInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         addNewRow(true);
-      } else if (e.key === 'Enter') {
-        setTimeout(() => autoResizeTextarea(noteInput), 0);
       }
     });
 
@@ -269,11 +280,6 @@
     state.rows.forEach((row, idx) => {
       const el = createRowElement(row, idx);
       scoreRowsContainer.appendChild(el);
-    });
-
-    // Ensure all note cells expand to fit their full content
-    requestAnimationFrame(() => {
-      scoreRowsContainer.querySelectorAll('.note-input').forEach(autoResizeTextarea);
     });
 
     calculateTotals();
@@ -403,11 +409,6 @@
       if (e.target === resetModal) {
         resetModal.classList.add('hidden');
       }
-    });
-
-    // Auto resize note cells when device is rotated or resized
-    window.addEventListener('resize', () => {
-      document.querySelectorAll('.note-input').forEach(autoResizeTextarea);
     });
 
     // Render initial UI
