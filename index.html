@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1e293b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>بژمێرە - تۆمارکەری خاڵەکان</title>
+  
+  <!-- Kurdish / Arabic Font: Vazirmatn -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="4" />
+            <path d="M7 8h10" />
+            <path d="M7 12h10" />
+            <path d="M7 16h10" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="app-title">بژمێرە</h1>
+          <span class="app-subtitle">تۆمارکەری خاڵەکانی دوو یاریزان</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="resetBtn" class="btn-icon" title="سڕینەوە و یاریی نوێ" aria-label="سڕینەوە و یاریی نوێ">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+          <span>نوێکردنەوە</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Player Names Section (Editable Header Names) -->
+      <section class="players-card">
+        <div class="player-input-group player-one-theme">
+          <div class="player-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-title">یاریزانی یەکەم</span>
+          </div>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="player1Name" 
+              class="player-name-input" 
+              placeholder="کەسی ١" 
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+        </div>
+
+        <div class="players-vs-badge">
+          <span>دژ بە</span>
+        </div>
+
+        <div class="player-input-group player-two-theme">
+          <div class="player-badge">
+            <span class="badge-dot"></span>
+            <span class="badge-title">یاریزانی دووەم</span>
+          </div>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="player2Name" 
+              class="player-name-input" 
+              placeholder="کەسی ٢" 
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- Score Table Section -->
+      <section class="table-section">
+        <!-- Table Column Headers -->
+        <div class="table-header-grid">
+          <div class="th-col th-num">#</div>
+          <div class="th-col th-p1" id="thPlayer1">کەسی ١</div>
+          <div class="th-col th-p2" id="thPlayer2">کەسی ٢</div>
+          <div class="th-col th-note">تێبینی</div>
+          <div class="th-col th-del"></div>
+        </div>
+
+        <!-- Dynamic Rows Container -->
+        <div id="scoreRowsContainer" class="score-rows-list">
+          <!-- Rows will be injected dynamically -->
+        </div>
+
+        <!-- Add Row Button Area -->
+        <div class="add-row-wrapper">
+          <button id="addRowBtn" class="btn-add-row" type="button">
+            <span class="btn-icon-plus">+</span>
+            <span class="btn-text">ڕیزێک زیاد بکە</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Sticky Live Totals Footer -->
+    <footer class="totals-footer">
+      <div class="totals-card">
+        <div class="totals-header">
+          <div class="totals-label-wrapper">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+            <span class="totals-title">کۆی گشتی</span>
+          </div>
+          <div id="diffBadge" class="diff-badge diff-tie">
+            یەکسانن
+          </div>
+        </div>
+
+        <div class="totals-grid">
+          <!-- Player 1 Total -->
+          <div class="total-box total-p1-box">
+            <span class="total-player-label" id="footerP1Name">کەسی ١</span>
+            <span class="total-number" id="totalP1">0</span>
+          </div>
+
+          <div class="totals-divider"></div>
+
+          <!-- Player 2 Total -->
+          <div class="total-box total-p2-box">
+            <span class="total-player-label" id="footerP2Name">کەسی ٢</span>
+            <span class="total-number" id="totalP2">0</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="resetModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-icon warning">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 9v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="modal-title">خاوێنکردنەوەی خشتەکە؟</h3>
+      <p class="modal-desc">ئایا دڵنیایت دەتەوێت سەرجەم خاڵەکان و ناوەکان پاک بکەیتەوە و دەستپێکێکی نوێ بکەیت؟</p>
+      <div class="modal-actions">
+        <button id="cancelResetBtn" class="btn-secondary">پاشگەزبوونەوە</button>
+        <button id="confirmResetBtn" class="btn-danger">بەڵێ، پاکیبکەوە</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
